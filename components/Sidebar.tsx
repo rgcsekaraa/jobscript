@@ -5,9 +5,10 @@ import { usePathname } from 'next/navigation';
 import {
   DocumentTextIcon,
   DocumentMagnifyingGlassIcon,
-  UserIcon,
+  InboxIcon,
   CogIcon,
   LifebuoyIcon,
+  WrenchIcon,
 } from '@heroicons/react/24/outline';
 
 const Sidebar: React.FC = () => {
@@ -69,7 +70,7 @@ const Sidebar: React.FC = () => {
                   pathname === '/mail' ? 'bg-base-300' : ''
                 } hover:bg-base-300`}
               >
-                <UserIcon className="w-8 h-8" />
+                <InboxIcon className="w-8 h-8" />
               </div>
               <span className="text-xs text-center">Mail Generator</span>
             </Link>
@@ -87,6 +88,21 @@ const Sidebar: React.FC = () => {
                 <LifebuoyIcon className="w-8 h-8" />
               </div>
               <span className="text-xs text-center">LinkedIn Digester</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/email-scraper"
+              className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-transparent focus:bg-transparent"
+            >
+              <div
+                className={`p-2 rounded-lg transition-colors ${
+                  pathname === '/email-scraper' ? 'bg-base-300' : ''
+                } hover:bg-base-300`}
+              >
+                <WrenchIcon className="w-8 h-8" />
+              </div>
+              <span className="text-xs text-center">Email Scraper</span>
             </Link>
           </li>
         </ul>

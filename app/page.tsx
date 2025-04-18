@@ -132,6 +132,53 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Feature 4: LinkedIn Profile Digester */}
+          <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div className="card-body">
+              <h3 className="card-title text-xl font-semibold">
+                LinkedIn Profile Digester
+              </h3>
+              <p className="mb-4">
+                Get to know about a linked in profile by extracting all their
+                details and key skills.
+              </p>
+              <h4 className="font-semibold text-sm">How to Use:</h4>
+              <ul className="list-disc list-inside text-sm mb-4">
+                <li>Paste the LinkedIn profile URL.</li>
+                <li>Click "Fetch Profile" to extract key skills.</li>
+                <li>Use AI Chatbot to know more about the profile</li>
+              </ul>
+              <div className="card-actions justify-end">
+                <Link href="/linkedin" className="btn btn-primary btn-sm">
+                  Try Now
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature 5: Email Scraper */}
+          <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div className="card-body">
+              <h3 className="card-title text-xl font-semibold">
+                Email Scraper
+              </h3>
+              <p className="mb-4">
+                Extract email addresses from company website easily.
+              </p>
+              <h4 className="font-semibold text-sm">How to Use:</h4>
+              <ul className="list-disc list-inside text-sm mb-4">
+                <li>Paste the Company URL.</li>
+                <li>Click "Scrape" to extract email addresses.</li>
+                <li>Copy/Export the extracted emails for your use.</li>
+              </ul>
+              <div className="card-actions justify-end">
+                <Link href="/email-scraper" className="btn btn-primary btn-sm">
+                  Try Now
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
