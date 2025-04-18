@@ -1,5 +1,6 @@
 'use client';
 
+import { fetchWithApiKey } from '@/lib/api';
 import { useState, useRef } from 'react';
 
 interface GeneratedContent {
@@ -227,7 +228,7 @@ export default function CVPage() {
         jobDescriptionLength: jobDescription.length,
       });
 
-      const response = await fetch('/api/generate-cover-letter', {
+      const response = await fetchWithApiKey('/api/generate-cover-letter', {
         method: 'POST',
         body: formData,
       });

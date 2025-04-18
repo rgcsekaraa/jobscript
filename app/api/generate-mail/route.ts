@@ -2,21 +2,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.KEY_4_OPENAI,
-});
-
 export async function POST(request: NextRequest) {
   console.log('Received POST request to /api/generate-mail');
   try {
-    // Validate Open AI API key
-    if (!process.env.KEY_4_OPENAI) {
-      console.error('Missing Open AI API key');
+    // Get API key from headers or environment
+    const apiKey =
+      request.headers.get('X-OpenAI-Api-Key') || process.env.KEY_4_OPENAI;
+    if (!apiKey) {
+      console.error('No OpenAI API key provided');
       return NextResponse.json(
-        { error: 'Server configuration error: Missing Open AI API key' },
+        { error: 'No OpenAI API key provided. Please set it in Settings.' },
         { status: 500 }
       );
     }
+
+    const openai = new OpenAI({ apiKey });
 
     // Parse JSON body
     console.log('Parsing request body');

@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.KEY_4_OPENAI, // Matches your provided environment variable
-});
-
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000; // Delay between retries in milliseconds
 
@@ -14,6 +10,19 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function POST(request: NextRequest) {
   console.log('Received POST request');
   try {
+    // Get API key from headers or environment
+    const apiKey =
+      request.headers.get('X-OpenAI-Api-Key') || process.env.KEY_4_OPENAI;
+    if (!apiKey) {
+      console.error('No OpenAI API key provided');
+      return NextResponse.json(
+        { error: 'No OpenAI API key provided. Please set it in Settings.' },
+        { status: 500 }
+      );
+    }
+
+    const openai = new OpenAI({ apiKey });
+
     console.log('Parsing form data');
     const formData = await request.formData();
     const file = formData.get('file') as File;

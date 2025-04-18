@@ -2,13 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import mammoth from 'mammoth';
 
-const openai = new OpenAI({
-  apiKey: process.env.KEY_4_OPENAI,
-});
-
 export async function POST(request: NextRequest) {
   console.log('Received POST request to /api/generate-cover-letter');
   try {
+    // Get API key from headers or environment
+    const apiKey =
+      request.headers.get('X-OpenAI-Api-Key') || process.env.KEY_4_OPENAI;
+    if (!apiKey) {
+      console.error('No OpenAI API key provided');
+      return NextResponse.json(
+        { error: 'No OpenAI API key provided. Please set it in Settings.' },
+        { status: 500 }
+      );
+    }
+
+    const openai = new OpenAI({ apiKey });
     // Parse form data
     console.log('Parsing form data');
     const formData = await request.formData();

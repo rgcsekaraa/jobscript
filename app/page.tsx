@@ -25,6 +25,13 @@ export default function Home() {
                   AI-powered system for crafting tailored resumes, cover
                   letters, and professional emails.
                 </p>
+                <p className="textarea-md">
+                  Paste your open-ai API key in the settings to unlock all
+                  features.
+                </p>
+                <Link href="/settings" className="btn btn-primary btn-lg mt-4">
+                  Get Started
+                </Link>
               </div>
             </div>
           </div>

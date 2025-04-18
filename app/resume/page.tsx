@@ -1,5 +1,6 @@
 'use client';
 
+import { fetchWithApiKey } from '@/lib/api';
 import { useState, useRef } from 'react';
 
 interface GeneratedContent {
@@ -69,6 +70,14 @@ export default function ResumePage() {
 
   // Clear file input
   const handleClearFile = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    setJobDescription('');
+    setGeneratedContent({ content: '' });
+    setIsLoading(false);
+    setIsLatexConverted(false);
+    setPdfUrl('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -227,7 +236,7 @@ export default function ResumePage() {
       formData.append('file', file);
       formData.append('jobDescription', jobDescription);
 
-      const response = await fetch('/api/generate-resume', {
+      const response = await fetchWithApiKey('/api/generate-resume', {
         method: 'POST',
         body: formData,
       });
