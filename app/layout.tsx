@@ -17,7 +17,7 @@ export default function RootLayout({
           }
             /* Set default zoom to 90% */
           body {
-            zoom: 97%;
+            zoom: 90%;
           }
 
         `}</style>
