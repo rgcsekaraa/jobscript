@@ -211,7 +211,7 @@ export default function MailPage() {
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-20">
         <h1 className="text-3xl font-bold">Mail Content Generator</h1>
         <button className="btn btn-secondary" onClick={handleReset}>
           Reset All
