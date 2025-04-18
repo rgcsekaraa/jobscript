@@ -15,6 +15,14 @@ export default function RootLayout({
           body:not(.theme-loaded) {
             visibility: hidden;
           }
+            /* Set default zoom to 90% */
+          body {
+            zoom: 90%;
+            /* Alternatively, you can use transform for better browser compatibility */
+            /* transform: scale(0.9); */
+            /* transform-origin: top left; */
+          }
+
         `}</style>
       </head>
       <body>
