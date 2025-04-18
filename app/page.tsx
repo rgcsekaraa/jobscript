@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="overflow-x-auto">
+    <div>
       <table className="table">
         {/* head */}
         <thead>
