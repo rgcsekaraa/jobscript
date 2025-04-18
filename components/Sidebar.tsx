@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   DocumentTextIcon,
-  MapIcon,
+  DocumentMagnifyingGlassIcon,
+  UserIcon,
   CogIcon,
+  LifebuoyIcon,
 } from '@heroicons/react/24/outline';
 
 const Sidebar: React.FC = () => {
@@ -52,7 +54,7 @@ const Sidebar: React.FC = () => {
                   pathname === '/cv' ? 'bg-base-300' : ''
                 } hover:bg-base-300`}
               >
-                <DocumentTextIcon className="w-8 h-8" />
+                <DocumentMagnifyingGlassIcon className="w-8 h-8" />
               </div>
               <span className="text-xs text-center">CV Generator</span>
             </Link>
@@ -67,9 +69,24 @@ const Sidebar: React.FC = () => {
                   pathname === '/mail' ? 'bg-base-300' : ''
                 } hover:bg-base-300`}
               >
-                <MapIcon className="w-8 h-8" />
+                <UserIcon className="w-8 h-8" />
               </div>
               <span className="text-xs text-center">Mail Generator</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/linkedin-digester"
+              className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-transparent focus:bg-transparent"
+            >
+              <div
+                className={`p-2 rounded-lg transition-colors ${
+                  pathname === '/linkedin-digester' ? 'bg-base-300' : ''
+                } hover:bg-base-300`}
+              >
+                <LifebuoyIcon className="w-8 h-8" />
+              </div>
+              <span className="text-xs text-center">LinkedIn Digester</span>
             </Link>
           </li>
         </ul>
