@@ -13,7 +13,7 @@ export default function ThemeProvider({ children }: { children: ReactNode }) {
     const systemDark = window.matchMedia(
       '(prefers-color-scheme: dark)'
     ).matches;
-    const theme = savedTheme || (systemDark ? 'business' : 'nord');
+    const theme = savedTheme || (systemDark ? 'business' : 'corporate');
 
     // Apply theme and mark as loaded
     document.documentElement.setAttribute('data-theme', theme);

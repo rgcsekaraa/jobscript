@@ -257,12 +257,12 @@ export default function MailPage() {
         <h1 className="text-3xl font-bold">Mail Content Generator</h1>
         <div className="flex gap-2">
           <button
-            className="btn btn-secondary"
+            className="btn btn-accent"
             onClick={() => setIsPromptModalOpen(true)}
           >
             Edit Prompt
           </button>
-          <button className="btn btn-secondary" onClick={handleReset}>
+          <button className="btn btn-neutral" onClick={handleReset}>
             Reset All
           </button>
         </div>

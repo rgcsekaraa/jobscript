@@ -422,12 +422,12 @@ export default function ResumePage() {
         <h1 className="text-3xl font-bold">Resume Generator</h1>
         <div className="flex gap-2">
           <button
-            className="btn btn-secondary"
+            className="btn btn-accent"
             onClick={() => setIsPromptModalOpen(true)}
           >
             Edit Prompts
           </button>
-          <button className="btn btn-secondary" onClick={handleReset}>
+          <button className="btn btn-neutral" onClick={handleReset}>
             Reset All
           </button>
         </div>

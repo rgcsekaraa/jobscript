@@ -3,18 +3,18 @@
 import { useEffect, useState } from 'react';
 
 export default function ThemeToggle() {
-  // Initialize state with current theme or fallback to 'nord'
+  // Initialize state with current theme or fallback to 'corporate'
   const [theme, setTheme] = useState(() =>
     typeof window !== 'undefined'
-      ? document.documentElement.getAttribute('data-theme') || 'nord'
-      : 'nord'
+      ? document.documentElement.getAttribute('data-theme') || 'corporate'
+      : 'corporate'
   );
 
   useEffect(() => {
     // Sync state with document's data-theme on mount and when it changes
     const syncTheme = () => {
       const currentTheme =
-        document.documentElement.getAttribute('data-theme') || 'nord';
+        document.documentElement.getAttribute('data-theme') || 'corporate';
       setTheme(currentTheme);
     };
 
@@ -27,7 +27,7 @@ export default function ThemeToggle() {
       if (!localStorage.getItem('theme')) {
         // Only update if no user-selected theme is saved
         const systemDark = mediaQuery.matches;
-        const newTheme = systemDark ? 'business' : 'nord';
+        const newTheme = systemDark ? 'business' : 'corporate';
         setTheme(newTheme);
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
@@ -51,7 +51,7 @@ export default function ThemeToggle() {
   }, []);
 
   const handleToggle = () => {
-    const newTheme = theme === 'nord' ? 'business' : 'nord';
+    const newTheme = theme === 'corporate' ? 'business' : 'corporate';
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
@@ -67,7 +67,7 @@ export default function ThemeToggle() {
         value="business"
         aria-label="Toggle between light and dark themes"
       />
-      {/* Sun icon for nord (light) theme */}
+      {/* Sun icon for corporate (light) theme */}
       <svg
         className="swap-off fill-current w-6 h-6"
         xmlns="http://www.w3.org/2000/svg"
