@@ -408,7 +408,7 @@ export default function LinkedInDigester() {
                 </button>
               </div>
               {/* Filter Checkboxes */}
-              <div className="form-control mb-4 flex gap-2">
+              <div className="form-control mb-4 flex gap-2 text-xs">
                 <label className="label cursor-pointer">
                   <input
                     type="checkbox"
