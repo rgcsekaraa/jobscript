@@ -63,6 +63,10 @@ export default function LinkedInDigester() {
   const fetchProfileData = async (username: string) => {
     setIsLoading(true);
     setError('');
+    setToast(null);
+    setProfileData(null); // Clear previous profile data
+    setChatMessages([]); // Clear chat messages on new fetch
+    setFilteredData(null); // Clear filtered data on new fetch
     try {
       const response = await fetch(
         `https://linkedingest.onrender.com/api/profile/${username}`,
