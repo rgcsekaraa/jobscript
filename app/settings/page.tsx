@@ -73,13 +73,13 @@ export default function SettingsPage() {
     localStorage.setItem('openai_api_key', apiKey);
     setStoredKey(apiKey);
     document.cookie = 'has_openai_api_key=true; path=/; max-age=31536000';
+    setSaving(false);
+    setTimeout(() => setToast(null), 3000);
+    window.location.reload();
     setToast({
       message: 'API key saved successfully!',
       type: 'success',
     });
-    setSaving(false);
-    setTimeout(() => setToast(null), 3000);
-    window.location.reload();
   };
 
   // Handle API Key Delete
@@ -88,13 +88,12 @@ export default function SettingsPage() {
     setStoredKey(null);
     setApiKey('');
     document.cookie = 'has_openai_api_key=; path=/; max-age=0';
+    window.location.reload(); // Reload to reset the state
     setToast({
       message:
         'API key deleted successfully! Please set a new API key to continue.',
       type: 'error',
     });
-    window.location.reload(); // Reload to reset the state
-    // Keep the error toast until a new key is set
   };
 
   // Toggle theme
