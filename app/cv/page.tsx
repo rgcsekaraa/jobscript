@@ -1,7 +1,7 @@
 'use client';
 
 import { fetchWithApiKey } from '@/lib/api';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface GeneratedContent {
   content: string;
@@ -19,12 +19,55 @@ export default function CVPage() {
     message: string;
     type: 'success' | 'error';
   } | null>(null);
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState<boolean>(false);
+  const [coverLetterPrompt, setCoverLetterPrompt] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const generatedContentRef = useRef<HTMLTextAreaElement>(null);
   const jobDescriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const fileTypes = ['.txt', '.docx'];
   const maxSizeMB = 2;
+
+  // Load prompt from local storage or fetch default
+  useEffect(() => {
+    const fetchPrompt = async () => {
+      try {
+        // Check local storage first
+        const storedPrompt = localStorage.getItem('customCoverLetterPrompt');
+        if (storedPrompt) {
+          setCoverLetterPrompt(storedPrompt);
+          return;
+        }
+
+        // Fetch default prompt from server
+        const response = await fetch('/api/generate-cover-letter', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        setCoverLetterPrompt(data.coverLetterPrompt);
+        localStorage.setItem('customCoverLetterPrompt', data.coverLetterPrompt);
+      } catch (error) {
+        setToast({
+          message: 'Failed to fetch default prompt',
+          type: 'error',
+        });
+        setTimeout(() => setToast(null), 3000);
+      }
+    };
+
+    fetchPrompt();
+  }, []);
+
+  // Handle saving prompt
+  const handleSavePrompt = () => {
+    localStorage.setItem('customCoverLetterPrompt', coverLetterPrompt);
+    setIsPromptModalOpen(false);
+    setToast({
+      message: 'Prompt saved successfully!',
+      type: 'success',
+    });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   // Handle file change
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,7 +247,6 @@ export default function CVPage() {
   };
 
   // Handle generate cover letter
-  // In CVPage.tsx, update handleGenerate
   const handleGenerate = async () => {
     if (!jobDescription || !file) {
       setToast({
@@ -220,12 +262,14 @@ export default function CVPage() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('jobDescription', jobDescription);
+      formData.append('customCoverLetterPrompt', coverLetterPrompt);
 
       console.log('Sending request to /api/generate-cover-letter', {
         fileName: file.name,
         fileType: file.type,
         fileSize: file.size,
         jobDescriptionLength: jobDescription.length,
+        hasCustomPrompt: !!coverLetterPrompt,
       });
 
       const response = await fetchWithApiKey('/api/generate-cover-letter', {
@@ -239,11 +283,9 @@ export default function CVPage() {
         headers: [...response.headers.entries()],
       });
 
-      // Log raw response text
       const responseText = await response.text();
       console.log('Raw response text:', responseText);
 
-      // Check if response is OK
       if (!response.ok) {
         console.error('API error response:', responseText);
         throw new Error(
@@ -253,7 +295,6 @@ export default function CVPage() {
         );
       }
 
-      // Check content type
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         console.error('Invalid response format:', responseText);
@@ -262,7 +303,6 @@ export default function CVPage() {
         );
       }
 
-      // Parse JSON
       const data = JSON.parse(responseText);
       console.log('Parsed response data:', data);
 
@@ -291,9 +331,17 @@ export default function CVPage() {
     <div className="container mx-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">CV Generator</h1>
-        <button className="btn btn-secondary" onClick={handleReset}>
-          Reset All
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setIsPromptModalOpen(true)}
+          >
+            Edit Prompt
+          </button>
+          <button className="btn btn-secondary" onClick={handleReset}>
+            Reset All
+          </button>
+        </div>
       </div>
 
       <div className="justify-end mb-2">
@@ -350,6 +398,32 @@ export default function CVPage() {
           </div>
         </div>
       )}
+
+      {/* Prompt Editing Modal */}
+      <dialog id="prompt_modal" className="modal" open={isPromptModalOpen}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Edit Cover Letter Prompt</h3>
+          <div className="mt-4">
+            <label className="block font-semibold mb-2">
+              Cover Letter Generation Prompt
+            </label>
+            <textarea
+              className="textarea w-full h-32"
+              value={coverLetterPrompt}
+              onChange={(e) => setCoverLetterPrompt(e.target.value)}
+              placeholder="Enter prompt for cover letter generation..."
+            />
+          </div>
+          <div className="modal-action">
+            <button className="btn btn-primary" onClick={handleSavePrompt}>
+              Save
+            </button>
+            <button className="btn" onClick={() => setIsPromptModalOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Left Side - Job Description */}

@@ -2,6 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import mammoth from 'mammoth';
 
+// Default prompt for cover letter generation
+const DEFAULT_COVER_LETTER_PROMPT = `
+  You are a professional cover letter writer. Generate a tailored cover letter based on the provided job description and base cover letter. The cover letter must:
+  - Include only skills, qualifications, and details relevant to the job description.
+  - Adopt the same writing style, tone, and structure as the base cover letter.
+  - Be concise, professional, and formatted as plain text.
+`;
+
+export async function GET() {
+  // Return the default prompt
+  return NextResponse.json({
+    coverLetterPrompt: DEFAULT_COVER_LETTER_PROMPT,
+  });
+}
+
 export async function POST(request: NextRequest) {
   console.log('Received POST request to /api/generate-cover-letter');
   try {
@@ -17,15 +32,20 @@ export async function POST(request: NextRequest) {
     }
 
     const openai = new OpenAI({ apiKey });
+
     // Parse form data
     console.log('Parsing form data');
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const jobDescription = formData.get('jobDescription') as string;
+    const customCoverLetterPrompt = formData.get(
+      'customCoverLetterPrompt'
+    ) as string;
 
     console.log('Form data parsed', {
       hasFile: !!file,
       hasJobDescription: !!jobDescription,
+      hasCustomPrompt: !!customCoverLetterPrompt,
     });
 
     if (!file || !jobDescription) {
@@ -100,10 +120,7 @@ export async function POST(request: NextRequest) {
     console.log('Generating cover letter with Open AI');
     try {
       const prompt = `
-        You are a professional cover letter writer. Generate a tailored cover letter based on the provided job description and base cover letter. The cover letter must:
-        - Include only skills, qualifications, and details relevant to the job description.
-        - Adopt the same writing style, tone, and structure as the base cover letter.
-        - Be concise, professional, and formatted as plain text.
+        ${customCoverLetterPrompt || DEFAULT_COVER_LETTER_PROMPT}
         
         Job Description:
         ${jobDescription}
