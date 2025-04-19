@@ -1,9 +1,6 @@
-// app/hyphen-remover/page.tsx
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import ThemeToggle from '@/components/ThemeToggle';
 
 export default function HyphenRemoverPage() {
   const [inputText, setInputText] = useState<string>('');
@@ -37,6 +34,14 @@ export default function HyphenRemoverPage() {
   const handleClearInput = () => {
     setInputText('');
     setToast({ message: 'Input cleared!', type: 'success' });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  // Handle Reset All
+  const handleReset = () => {
+    setInputText('');
+    setOutputText('');
+    setToast({ message: 'All fields reset!', type: 'success' });
     setTimeout(() => setToast(null), 3000);
   };
 
@@ -114,6 +119,11 @@ export default function HyphenRemoverPage() {
       <header className="mb-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Hyphen Remover</h1>
+          <div className="flex gap-2">
+            <button className="btn btn-neutral" onClick={handleReset}>
+              Reset All
+            </button>
+          </div>
         </div>
         <p className="mt-2">
           Enter text to remove em-dashes (—) and replace them with spaces.
@@ -191,22 +201,41 @@ export default function HyphenRemoverPage() {
             <button
               onClick={handleCopyOutput}
               className="btn btn-primary btn-sm"
+              disabled={!outputText.trim()}
             >
               Copy
             </button>
             <button
               onClick={handleClearOutput}
               className="btn btn-outline btn-sm"
+              disabled={!outputText.trim()}
             >
               Clear
             </button>
           </div>
-          <textarea
-            value={outputText}
-            readOnly
-            className="textarea textarea-bordered w-full h-64"
-            placeholder="Sanitized text will appear here."
-          />
+          {isLoading ? (
+            <div className="flex w-full flex-col gap-2">
+              <div className="skeleton h-4 w-1/2"></div>
+              <div className="skeleton h-4 w-5/6"></div>
+              <div className="skeleton h-4 w-4/6"></div>
+              <div className="skeleton h-4 w-3/6"></div>
+              <div className="skeleton h-4 w-5/6"></div>
+              <div className="skeleton h-4 w-full"></div>
+              <div className="skeleton h-4 w-1/4"></div>
+              <div className="skeleton h-4 w-1/3"></div>
+              <div className="skeleton h-4 w-1/2"></div>
+              <div className="skeleton h-4 w-3/4"></div>
+              <div className="skeleton h-4 w-2/3"></div>
+              <div className="skeleton h-4 w-1/2"></div>
+            </div>
+          ) : (
+            <textarea
+              value={outputText}
+              readOnly
+              className="textarea textarea-bordered w-full h-64"
+              placeholder="Sanitized text will appear here."
+            />
+          )}
         </div>
       </div>
 
