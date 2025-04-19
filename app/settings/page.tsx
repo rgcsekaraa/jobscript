@@ -77,7 +77,7 @@ export default function SettingsPage() {
     setToast(null);
     setTimeout(() => {
       window.location.reload();
-    }, 2000);
+    }, 1000);
     setToast({
       message: 'API key saved successfully!',
       type: 'success',
@@ -92,7 +92,7 @@ export default function SettingsPage() {
     document.cookie = 'has_openai_api_key=; path=/; max-age=0';
     setTimeout(() => {
       window.location.reload();
-    }, 3000);
+    }, 1000);
     setToast({
       message:
         'API key deleted successfully! Please set a new API key to continue.',
