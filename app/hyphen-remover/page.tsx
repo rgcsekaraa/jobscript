@@ -246,7 +246,7 @@ export default function HyphenRemoverPage() {
           className="btn btn-primary"
           disabled={isLoading}
         >
-          {isLoading ? 'Generating...' : 'Generate'}
+          {isLoading ? 'Removing...' : 'Remove'}
         </button>
       </div>
     </div>
