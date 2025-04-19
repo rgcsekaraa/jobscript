@@ -1,6 +1,21 @@
-// app/api/generate-mail/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+
+// Default prompt for email generation
+const DEFAULT_EMAIL_PROMPT = `
+  You are a professional email writer. Generate a professional email for a job application based on the provided job description. The email must:
+  - Include only skills, qualifications, and details relevant to the job description.
+  - Be concise, professional, and formatted as plain text.
+  - Use a formal tone suitable for a job application.
+  - Include standard email components (e.g., subject line, greeting, body, closing).
+`;
+
+export async function GET() {
+  // Return the default prompt
+  return NextResponse.json({
+    emailPrompt: DEFAULT_EMAIL_PROMPT,
+  });
+}
 
 export async function POST(request: NextRequest) {
   console.log('Received POST request to /api/generate-mail');
@@ -20,10 +35,11 @@ export async function POST(request: NextRequest) {
 
     // Parse JSON body
     console.log('Parsing request body');
-    const { jobDescription } = await request.json();
+    const { jobDescription, customEmailPrompt } = await request.json();
     console.log('Request body parsed', {
       hasJobDescription: !!jobDescription,
       jobDescriptionLength: jobDescription?.length,
+      hasCustomPrompt: !!customEmailPrompt,
     });
 
     if (
@@ -42,11 +58,7 @@ export async function POST(request: NextRequest) {
     console.log('Generating email with Open AI');
     try {
       const prompt = `
-        You are a professional email writer. Generate a professional email for a job application based on the provided job description. The email must:
-        - Include only skills, qualifications, and details relevant to the job description.
-        - Be concise, professional, and formatted as plain text.
-        - Use a formal tone suitable for a job application.
-        - Include standard email components (e.g., subject line, greeting, body, closing).
+        ${customEmailPrompt || DEFAULT_EMAIL_PROMPT}
         
         Job Description:
         ${jobDescription}

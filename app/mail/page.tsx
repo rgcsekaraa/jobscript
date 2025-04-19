@@ -1,7 +1,7 @@
 'use client';
 
 import { fetchWithApiKey } from '@/lib/api';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface GeneratedContent {
   content: string;
@@ -18,8 +18,51 @@ export default function MailPage() {
     message: string;
     type: 'success' | 'error';
   } | null>(null);
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState<boolean>(false);
+  const [emailPrompt, setEmailPrompt] = useState<string>('');
   const generatedContentRef = useRef<HTMLTextAreaElement>(null);
   const jobDescriptionRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load prompt from local storage or fetch default
+  useEffect(() => {
+    const fetchPrompt = async () => {
+      try {
+        // Check local storage first
+        const storedPrompt = localStorage.getItem('customEmailPrompt');
+        if (storedPrompt) {
+          setEmailPrompt(storedPrompt);
+          return;
+        }
+
+        // Fetch default prompt from server
+        const response = await fetch('/api/generate-mail', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        setEmailPrompt(data.emailPrompt);
+        localStorage.setItem('customEmailPrompt', data.emailPrompt);
+      } catch (error) {
+        setToast({
+          message: 'Failed to fetch default prompt',
+          type: 'error',
+        });
+        setTimeout(() => setToast(null), 3000);
+      }
+    };
+
+    fetchPrompt();
+  }, []);
+
+  // Handle saving prompt
+  const handleSavePrompt = () => {
+    localStorage.setItem('customEmailPrompt', emailPrompt);
+    setIsPromptModalOpen(false);
+    setToast({
+      message: 'Prompt saved successfully!',
+      type: 'success',
+    });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   // Reset all form values
   const handleReset = () => {
@@ -152,7 +195,10 @@ export default function MailPage() {
       const response = await fetchWithApiKey('/api/generate-mail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobDescription }),
+        body: JSON.stringify({
+          jobDescription,
+          customEmailPrompt: emailPrompt,
+        }),
       });
 
       console.log('Response received', {
@@ -161,11 +207,9 @@ export default function MailPage() {
         headers: [...response.headers.entries()],
       });
 
-      // Log raw response text
       const responseText = await response.text();
       console.log('Raw response text:', responseText);
 
-      // Check if response is OK
       if (!response.ok) {
         console.error('API error response:', responseText);
         throw new Error(
@@ -175,7 +219,6 @@ export default function MailPage() {
         );
       }
 
-      // Check content type
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         console.error('Invalid response format:', responseText);
@@ -184,7 +227,6 @@ export default function MailPage() {
         );
       }
 
-      // Parse JSON
       const data = JSON.parse(responseText);
       console.log('Parsed response data:', data);
 
@@ -213,9 +255,17 @@ export default function MailPage() {
     <div className="container mx-auto">
       <div className="flex justify-between items-center mb-20">
         <h1 className="text-3xl font-bold">Mail Content Generator</h1>
-        <button className="btn btn-secondary" onClick={handleReset}>
-          Reset All
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setIsPromptModalOpen(true)}
+          >
+            Edit Prompt
+          </button>
+          <button className="btn btn-secondary" onClick={handleReset}>
+            Reset All
+          </button>
+        </div>
       </div>
 
       {/* DaisyUI Toast */}
@@ -248,6 +298,32 @@ export default function MailPage() {
           </div>
         </div>
       )}
+
+      {/* Prompt Editing Modal */}
+      <dialog id="prompt_modal" className="modal" open={isPromptModalOpen}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Edit Email Prompt</h3>
+          <div className="mt-4">
+            <label className="block font-semibold mb-2">
+              Email Generation Prompt
+            </label>
+            <textarea
+              className="textarea w-full h-32"
+              value={emailPrompt}
+              onChange={(e) => setEmailPrompt(e.target.value)}
+              placeholder="Enter prompt for email generation..."
+            />
+          </div>
+          <div className="modal-action">
+            <button className="btn btn-primary" onClick={handleSavePrompt}>
+              Save
+            </button>
+            <button className="btn" onClick={() => setIsPromptModalOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Left Side - Job Description */}
