@@ -74,10 +74,10 @@ export default function SettingsPage() {
     setStoredKey(apiKey);
     document.cookie = 'has_openai_api_key=true; path=/; max-age=31536000';
     setSaving(false);
-    setTimeout(() => setToast(null), 3000);
+    setToast(null);
     setTimeout(() => {
       window.location.reload();
-    }, 3000);
+    }, 2000);
     setToast({
       message: 'API key saved successfully!',
       type: 'success',
