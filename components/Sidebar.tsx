@@ -20,11 +20,15 @@ const Sidebar: React.FC = () => {
       <div className="p-6 flex-col items-center">
         <div>
           <Link href="/" className="flex items-center">
-            <img src="logo.png" alt="Jobscript Logo" className="w-16 h-16" />
+            <img
+              src="logo.png"
+              alt="Jobscript Logo"
+              className="w-16 h-16 ml-1"
+            />
           </Link>
         </div>
         <div>
-          <span className="font-mono text-xs ">JobScript</span>
+          <span className="font-mono text-xs ml-1">JobScript</span>
         </div>
       </div>
       {/* Navigation Section */}
