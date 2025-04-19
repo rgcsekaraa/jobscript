@@ -1,11 +1,16 @@
 'use client';
 
 import { fetchWithApiKey } from '@/lib/api';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface GeneratedContent {
   content: string;
   error?: string;
+}
+
+interface Prompts {
+  jobAnalysisPrompt: string;
+  latexPrompt: string;
 }
 
 export default function ResumePage() {
@@ -19,17 +24,63 @@ export default function ResumePage() {
     message: string;
     type: 'success' | 'error';
   } | null>(null);
-  const [isLatexConverted, setIsLatexConverted] = useState<boolean>(false); // Track LaTeX conversion
-  const [pdfUrl, setPdfUrl] = useState<string>(''); // Store PDF URL for download
+  const [isLatexConverted, setIsLatexConverted] = useState<boolean>(false);
+  const [pdfUrl, setPdfUrl] = useState<string>('');
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState<boolean>(false);
+  const [prompts, setPrompts] = useState<Prompts>({
+    jobAnalysisPrompt: '',
+    latexPrompt: '',
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const generatedContentRef = useRef<HTMLTextAreaElement>(null); // Ref for generated content textarea
-  const jobDescriptionRef = useRef<HTMLTextAreaElement>(null); // Ref for job description textarea
-  const overleafFormRef = useRef<HTMLFormElement>(null); // Ref for Overleaf form
+  const generatedContentRef = useRef<HTMLTextAreaElement>(null);
+  const jobDescriptionRef = useRef<HTMLTextAreaElement>(null);
+  const overleafFormRef = useRef<HTMLFormElement>(null);
 
   const fileTypes = ['.txt', '.tex'];
   const maxSizeMB = 2;
 
-  // Basic LaTeX validation
+  // Load prompts from local storage or fetch defaults
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        // Check local storage first
+        const storedPrompts = localStorage.getItem('customPrompts');
+        if (storedPrompts) {
+          setPrompts(JSON.parse(storedPrompts));
+          return;
+        }
+
+        // Fetch default prompts from server
+        const response = await fetch('/api/generate-resume', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        setPrompts(data);
+        localStorage.setItem('customPrompts', JSON.stringify(data));
+      } catch (error) {
+        setToast({
+          message: 'Failed to fetch default prompts',
+          type: 'error',
+        });
+        setTimeout(() => setToast(null), 3000);
+      }
+    };
+
+    fetchPrompts();
+  }, []);
+
+  // Handle saving prompts
+  const handleSavePrompts = () => {
+    localStorage.setItem('customPrompts', JSON.stringify(prompts));
+    setIsPromptModalOpen(false);
+    setToast({
+      message: 'Prompts saved successfully!',
+      type: 'success',
+    });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  // Validate LaTeX
   const validateLatex = (content: string): boolean => {
     const hasDocClass = content.includes('\\documentclass');
     const hasBeginDoc = content.includes('\\begin{document}');
@@ -42,7 +93,6 @@ export default function ResumePage() {
     const selectedFile = event.target.files?.[0];
     if (!selectedFile) return;
 
-    // Validate file type
     const fileExtension = selectedFile.name.split('.').pop()?.toLowerCase();
     if (!fileExtension || !fileTypes.includes(`.${fileExtension}`)) {
       setToast({
@@ -53,7 +103,6 @@ export default function ResumePage() {
       return;
     }
 
-    // Validate file size (2MB)
     if (selectedFile.size > maxSizeMB * 1024 * 1024) {
       setToast({ message: 'File size exceeds 2MB', type: 'error' });
       setTimeout(() => setToast(null), 3000);
@@ -78,9 +127,6 @@ export default function ResumePage() {
     setIsLoading(false);
     setIsLatexConverted(false);
     setPdfUrl('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
     setFile(null);
     setToast({
       message: 'File cleared successfully!',
@@ -115,7 +161,6 @@ export default function ResumePage() {
         if (navigator.clipboard) {
           await navigator.clipboard.writeText(text);
         } else {
-          // Fallback for older browsers
           jobDescriptionRef.current.select();
           document.execCommand('copy');
         }
@@ -169,7 +214,6 @@ export default function ResumePage() {
         if (navigator.clipboard) {
           await navigator.clipboard.writeText(text);
         } else {
-          // Fallback for older browsers
           generatedContentRef.current.select();
           document.execCommand('copy');
         }
@@ -235,6 +279,8 @@ export default function ResumePage() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('jobDescription', jobDescription);
+      formData.append('customJobAnalysisPrompt', prompts.jobAnalysisPrompt);
+      formData.append('customLatexPrompt', prompts.latexPrompt);
 
       const response = await fetchWithApiKey('/api/generate-resume', {
         method: 'POST',
@@ -263,7 +309,7 @@ export default function ResumePage() {
     }
   };
 
-  // Handle LaTeX to PDF conversion using proxy endpoint
+  // Handle LaTeX to PDF conversion
   const handleConvertToLatex = async () => {
     if (!generatedContent.content) {
       setToast({
@@ -374,9 +420,17 @@ export default function ResumePage() {
     <div className="container mx-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Resume Generator</h1>
-        <button className="btn btn-secondary" onClick={handleReset}>
-          Reset All
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="btn btn-secondary"
+            onClick={() => setIsPromptModalOpen(true)}
+          >
+            Edit Prompts
+          </button>
+          <button className="btn btn-secondary" onClick={handleReset}>
+            Reset All
+          </button>
+        </div>
       </div>
 
       <div className="justify-end mb-2">
@@ -433,6 +487,47 @@ export default function ResumePage() {
           </div>
         </div>
       )}
+
+      {/* Prompt Editing Modal */}
+      <dialog id="prompt_modal" className="modal" open={isPromptModalOpen}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Edit Prompts</h3>
+          <div className="mt-4">
+            <label className="block font-semibold mb-2">
+              Job Description Analysis Prompt
+            </label>
+            <textarea
+              className="textarea w-full h-32"
+              value={prompts.jobAnalysisPrompt}
+              onChange={(e) =>
+                setPrompts({ ...prompts, jobAnalysisPrompt: e.target.value })
+              }
+              placeholder="Enter prompt for job description analysis..."
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block font-semibold mb-2">
+              LaTeX Resume Generation Prompt
+            </label>
+            <textarea
+              className="textarea w-full h-32"
+              value={prompts.latexPrompt}
+              onChange={(e) =>
+                setPrompts({ ...prompts, latexPrompt: e.target.value })
+              }
+              placeholder="Enter prompt for LaTeX resume generation..."
+            />
+          </div>
+          <div className="modal-action">
+            <button className="btn btn-primary" onClick={handleSavePrompts}>
+              Save
+            </button>
+            <button className="btn" onClick={() => setIsPromptModalOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
 
       {/* Overleaf Form */}
       <form

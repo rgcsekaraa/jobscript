@@ -2,15 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1000; // Delay between retries in milliseconds
+const RETRY_DELAY_MS = 1000;
+
+// Default prompt for job description analysis
+const DEFAULT_JOB_ANALYSIS_PROMPT = `You are an expert job description analyzer. Extract key skills, must-haves, and other relevant requirements from the provided job description. Provide a concise summary in plain text, listing the key skills, qualifications, and responsibilities.`;
+
+// Default prompt for LaTeX resume generation
+const DEFAULT_LATEX_PROMPT = `You are a professional LaTeX resume writer. Generate a tailored LaTeX resume based on the provided base LaTeX resume and the extracted job details (key skills, must-haves, and requirements). Output valid LaTeX code same like base resume latex code that can be compiled into a professional resume, ensuring it incorporates the relevant skills and requirements while preserving the structure of the base resume.`;
 
 // Helper function to delay execution
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+export async function GET() {
+  // Return default prompts
+  return NextResponse.json({
+    jobAnalysisPrompt: DEFAULT_JOB_ANALYSIS_PROMPT,
+    latexPrompt: DEFAULT_LATEX_PROMPT,
+  });
+}
+
 export async function POST(request: NextRequest) {
   console.log('Received POST request');
   try {
-    // Get API key from headers or environment
     const apiKey =
       request.headers.get('X-OpenAI-Api-Key') || process.env.KEY_4_OPENAI;
     if (!apiKey) {
@@ -27,6 +40,10 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const jobDescription = formData.get('jobDescription') as string;
+    const customJobAnalysisPrompt = formData.get(
+      'customJobAnalysisPrompt'
+    ) as string;
+    const customLatexPrompt = formData.get('customLatexPrompt') as string;
 
     console.log('Form data parsed', {
       hasFile: !!file,
@@ -41,15 +58,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read file as text
-    console.log('Reading file buffer');
     const fileBuffer = Buffer.from(await file.arrayBuffer());
     const resumeText = fileBuffer.toString('utf-8');
     console.log('File read successfully', {
       resumeTextLength: resumeText.length,
     });
 
-    // Step 1: Extract key skills and must-haves from job description with retries
+    // Step 1: Extract key skills and must-haves from job description
     let jobDetails = '';
     let retryCount = 0;
     let success = false;
@@ -68,8 +83,7 @@ export async function POST(request: NextRequest) {
           messages: [
             {
               role: 'system',
-              content:
-                'You are an expert job description analyzer. Extract key skills, must-haves, and other relevant requirements from the provided job description. Provide a concise summary in plain text, listing the key skills, qualifications, and responsibilities.',
+              content: customJobAnalysisPrompt || DEFAULT_JOB_ANALYSIS_PROMPT,
             },
             {
               role: 'user',
@@ -113,7 +127,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Step 2: Generate LaTeX resume code using the extracted job details and base resume
+    // Step 2: Generate LaTeX resume code
     console.log('Starting LaTeX resume generation');
     try {
       console.log('Calling OpenAI API for LaTeX resume generation');
@@ -122,15 +136,14 @@ export async function POST(request: NextRequest) {
         messages: [
           {
             role: 'system',
-            content:
-              'You are a professional LaTeX resume writer. Generate a tailored LaTeX resume based on the provided base LaTeX resume and the extracted job details (key skills, must-haves, and requirements). Output valid LaTeX code same like base resume latex code that can be compiled into a professional resume, ensuring it incorporates the relevant skills and requirements while preserving the structure of the base resume.',
+            content: customLatexPrompt || DEFAULT_LATEX_PROMPT,
           },
           {
             role: 'user',
             content: `Base LaTeX Resume:\n${resumeText}\n\nExtracted Job Details:\n${jobDetails}\n\nGenerate tailored LaTeX resume code:`,
           },
         ],
-        max_tokens: 2000, // Increased to accommodate LaTeX code
+        max_tokens: 2000,
       });
 
       const content = completion.choices[0]?.message.content || '';
