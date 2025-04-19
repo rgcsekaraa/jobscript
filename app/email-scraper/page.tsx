@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ThemeToggle from '@/components/ThemeToggle';
 
 export default function EmailCrawlerPage() {
   const [url, setUrl] = useState<string>('');
