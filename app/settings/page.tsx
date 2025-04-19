@@ -93,6 +93,7 @@ export default function SettingsPage() {
         'API key deleted successfully! Please set a new API key to continue.',
       type: 'error',
     });
+    window.location.reload(); // Reload to reset the state
     // Keep the error toast until a new key is set
   };
 
