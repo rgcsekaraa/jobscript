@@ -79,6 +79,7 @@ export default function SettingsPage() {
     });
     setSaving(false);
     setTimeout(() => setToast(null), 3000);
+    window.location.reload();
   };
 
   // Handle API Key Delete
