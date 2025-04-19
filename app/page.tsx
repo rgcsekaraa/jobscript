@@ -179,6 +179,29 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* Feature 6: Hyphen Remover */}
+          <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
+            <div className="card-body">
+              <h3 className="card-title text-xl font-semibold">
+                Hyphen Remover
+              </h3>
+              <p className="mb-4">
+                Remove annoying hyphens from your gpt generated text easily.
+              </p>
+              <h4 className="font-semibold text-sm">How to Use:</h4>
+              <ul className="list-disc list-inside text-sm mb-4">
+                <li>Paste the text with hyphens.</li>
+                <li>Click "Remove" to clean the text.</li>
+                <li>Copy the sanitized text for your use.</li>
+              </ul>
+              <div className="card-actions justify-end">
+                <Link href="/hyphen-remover" className="btn btn-primary btn-sm">
+                  Try Now
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
