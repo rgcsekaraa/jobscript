@@ -390,7 +390,27 @@ export default function LinkedInDigester() {
           <h2 className="card-title mb-4">
             Profile Ingest of {profileData?.name || 'User'}
           </h2>
-          {profileData ? (
+          {isLoading ? (
+            <div className="mockup-code p-4">
+              <div className="flex w-full flex-col gap-2">
+                <div className="skeleton h-4 w-3/4"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-4/6"></div>
+                <div className="skeleton h-4 w-3/6"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-1/4"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-4/6"></div>
+                <div className="skeleton h-4 w-3/6"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-1/4"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-3/4"></div>
+              </div>
+            </div>
+          ) : profileData ? (
             <>
               {/* Action Buttons */}
               <div className="flex gap-2 mb-4">

@@ -232,7 +232,32 @@ export default function EmailCrawlerPage() {
       {/* Email Results */}
       <div className="card bg-base-100 shadow-xl p-6 flex-grow">
         <h2 className="card-title mb-4">Extracted Emails</h2>
-        {emails.length > 0 ? (
+        {isLoading ? (
+          <div className="flex w-full flex-col gap-2">
+            <p className="text-sm text-gray-500">
+              Please wait, it may take a few minutes to retrieve all email
+              addresses.
+            </p>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/4"></div>
+            <div className="skeleton h-4 w-1/4"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/4"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/5"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/6"></div>
+            <div className="skeleton h-4 w-1/4"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/4"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+            <div className="skeleton h-4 w-1/3"></div>
+          </div>
+        ) : emails.length > 0 ? (
           <>
             <div className="flex gap-2 mb-4">
               <button

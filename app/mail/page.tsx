@@ -304,7 +304,27 @@ export default function MailPage() {
             </div>
           </div>
           <div className="border rounded p-4 h-96 overflow-y-auto">
-            {generatedContent.error ? (
+            {isLoading ? (
+              <div className="flex w-full flex-col gap-2">
+                <div className="skeleton h-4 w-1/2"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-4/6"></div>
+                <div className="skeleton h-4 w-3/6"></div>
+                <div className="skeleton h-4 w-5/6"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="flex w-full flex-col gap-2">
+                  <div className="skeleton h-4 w-1/4"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-4/6"></div>
+                  <div className="skeleton h-4 w-3/6"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-full"></div>
+                  <div className="skeleton h-4 w-1/4"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-4/6"></div>
+                </div>
+              </div>
+            ) : generatedContent.error ? (
               <div role="alert" className="alert alert-error alert-soft">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
