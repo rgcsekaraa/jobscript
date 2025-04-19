@@ -24,7 +24,10 @@ const Sidebar: React.FC = () => {
      }`;
 
   return (
-    <div className="w-30 h-full bg-base-200 text-base-content flex flex-col">
+    <div
+      className="w-30 h-full bg-base-200 text-base-content flex flex-col font-bold"
+      style={{ zoom: '88%' }}
+    >
       {/* Logo Section */}
       <div className="p-6 flex-col items-center">
         <div>
