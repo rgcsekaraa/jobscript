@@ -313,7 +313,7 @@ export default function LinkedInDigester() {
   };
 
   return (
-    <div className="container mx-auto min-h-screen flex flex-col">
+    <div className=" px-4 py-8 mx-auto min-h-screen flex flex-col">
       <header className="mb-8">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">LinkedIn Digester</h1>

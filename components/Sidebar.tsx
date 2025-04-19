@@ -9,6 +9,7 @@ import {
   CogIcon,
   LifebuoyIcon,
   WrenchIcon,
+  HashtagIcon,
 } from '@heroicons/react/24/outline';
 
 const Sidebar: React.FC = () => {
@@ -93,9 +94,20 @@ const Sidebar: React.FC = () => {
               className="flex flex-col items-center gap-2 p-2 rounded-lg"
             >
               <div className={getLinkClasses('/email-scraper')}>
-                <WrenchIcon className="w-8 h-8" />
+                <HashtagIcon className="w-8 h-8" />
               </div>
               <span className="text-xs text-center">Email Scraper</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/hyphen-remover"
+              className="flex flex-col items-center gap-2 p-2 rounded-lg"
+            >
+              <div className={getLinkClasses('/hyphen-remover')}>
+                <WrenchIcon className="w-8 h-8" />
+              </div>
+              <span className="text-xs text-center">Hyphen Remover</span>
             </Link>
           </li>
         </ul>

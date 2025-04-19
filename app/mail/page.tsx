@@ -252,7 +252,7 @@ export default function MailPage() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className=" px-4 py-8 min-h-screen mx-auto">
       <div className="flex justify-between items-center mb-20">
         <h1 className="text-3xl font-bold">Mail Content Generator</h1>
         <div className="flex gap-2">

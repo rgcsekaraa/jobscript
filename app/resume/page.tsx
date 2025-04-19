@@ -417,7 +417,7 @@ export default function ResumePage() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className=" px-4 py-8 min-h-screen mx-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold">Resume Generator</h1>
         <div className="flex gap-2">
