@@ -25,9 +25,15 @@ async function fetchWithRetry(url: string, retries = 2): Promise<any> {
     } catch (err) {
       if (i === retries) {
         console.warn(
-          `Failed to fetch ${url} after ${retries} retries: ${err.message}`
+          `Failed to fetch ${url} after ${retries} retries: ${
+            err instanceof Error ? err.message : 'Unknown error'
+          }`
         );
-        throw new Error(`Failed to fetch ${url}: ${err.message}`);
+        throw new Error(
+          `Failed to fetch ${url}: ${
+            err instanceof Error ? err.message : 'Unknown error'
+          }`
+        );
       }
       console.log(`Retrying ${url} (${i + 1}/${retries})`);
     }
@@ -47,15 +53,21 @@ function extractLinks(base: string, html: string): string[] {
     $('a[href]').each((_, el) => {
       const href = $(el).attr('href');
       try {
-        const absoluteUrl = new URL(href, base).href;
-        if (absoluteUrl.startsWith(base)) links.add(absoluteUrl);
+        if (href) {
+          const absoluteUrl = new URL(href, base).href;
+          if (absoluteUrl.startsWith(base)) links.add(absoluteUrl);
+        }
       } catch {}
     });
 
     console.log(`Extracted ${links.size} links from ${base}`);
     return [...links];
   } catch (err) {
-    console.error(`Error in extractLinks: ${err.message}`);
+    if (err instanceof Error) {
+      console.error(`Error in extractLinks: ${err.message}`);
+    } else {
+      console.error('Error in extractLinks: Unknown error');
+    }
     return [];
   }
 }
@@ -112,7 +124,11 @@ export async function crawlWebsiteForEmails(startUrl: string) {
             }
           });
         } catch (err) {
-          console.warn(`Failed to process ${url}: ${err.message}`);
+          console.warn(
+            `Failed to process ${url}: ${
+              err instanceof Error ? err.message : 'Unknown error'
+            }`
+          );
         }
       }
     }

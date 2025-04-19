@@ -154,12 +154,10 @@ export default function EmailCrawlerPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col">
+    <div className="container mx-auto min-h-screen flex flex-col">
       <header className="mb-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">
-            Email Crawler by <span className="text-primary">JobScript</span>
-          </h1>
+          <h1 className="text-3xl font-bold">Email Crawler</h1>
         </div>
         <p className="mt-2">Enter a website URL to extract email addresses.</p>
       </header>
