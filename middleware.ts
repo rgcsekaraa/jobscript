@@ -5,7 +5,13 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow access to the settings page without checking for the API key
-  if (pathname === '/' || pathname === '/settings') {
+  if (
+    pathname === '/' ||
+    pathname === '/settings' ||
+    pathname === '/hyphen-remover' ||
+    pathname === '/email-scraper' ||
+    pathname === '/linkedin-digester'
+  ) {
     return NextResponse.next();
   }
 
