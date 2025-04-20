@@ -223,6 +223,18 @@ export default function SettingsPage() {
           )}
         </div>
       </div>
+
+      {/* Theme Toggle */}
+      <div className="card bg-base-100 shadow-xl p-6 max-w-md">
+        <h2 className="card-title mb-4">Theme Preferences</h2>
+        <div className="flex items-center mb-2">
+          <span className="mr-3">Toggle Light/Dark Mode :</span>
+          <ThemeToggle />
+        </div>
+        <p className="text-sm">
+          Switch between light and dark modes to suit your preference.
+        </p>
+      </div>
     </div>
   );
 }
