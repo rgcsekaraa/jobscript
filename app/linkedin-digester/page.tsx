@@ -392,6 +392,7 @@ export default function LinkedInDigester() {
           </h2>
           {isLoading ? (
             <div className="mockup-code p-4">
+              <p>Please Wait while we are fetching the profile details</p>
               <div className="flex w-full flex-col gap-2">
                 <div className="skeleton h-4 w-3/4"></div>
                 <div className="skeleton h-4 w-5/6"></div>
