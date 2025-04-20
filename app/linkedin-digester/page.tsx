@@ -42,7 +42,7 @@ export default function LinkedInDigester() {
     honors: true,
     certifications: true,
     skills: true,
-    posts: true,
+    posts: false,
   });
 
   // Toggle theme
