@@ -325,7 +325,7 @@ export default function LinkedInDigester() {
 
       {/* Toast */}
       {toast && (
-        <div className="toast toast-top toast-end">
+        <div className="toast toast-top toast-center">
           <div role="alert" className={`alert alert-${toast.type} alert-soft`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -386,179 +386,182 @@ export default function LinkedInDigester() {
       {/* Main Content */}
       <div className="flex flex-col lg:flex-row gap-6 flex-grow">
         {/* Left: JSON Output with Filters */}
-        <div className="lg:w-1/2 card bg-base-100 shadow-xl p-6">
-          <h2 className="card-title mb-4">
-            Profile Ingest of {profileData?.name || 'User'}
-          </h2>
-          {isLoading ? (
-            <div className="mockup-code p-4">
-              <p>Please Wait while we are fetching the profile details</p>
-              <div className="flex w-full flex-col gap-2">
-                <div className="skeleton h-4 w-3/4"></div>
-                <div className="skeleton h-4 w-5/6"></div>
-                <div className="skeleton h-4 w-4/6"></div>
-                <div className="skeleton h-4 w-3/6"></div>
-                <div className="skeleton h-4 w-5/6"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-1/4"></div>
-                <div className="skeleton h-4 w-5/6"></div>
-                <div className="skeleton h-4 w-4/6"></div>
-                <div className="skeleton h-4 w-3/6"></div>
-                <div className="skeleton h-4 w-5/6"></div>
-                <div className="skeleton h-4 w-full"></div>
-                <div className="skeleton h-4 w-1/4"></div>
-                <div className="skeleton h-4 w-5/6"></div>
-                <div className="skeleton h-4 w-3/4"></div>
-              </div>
-            </div>
-          ) : profileData ? (
-            <>
-              {/* Action Buttons */}
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={handleCopyAll}
-                  className="btn btn-primary btn-sm"
-                >
-                  Copy All
-                </button>
-                <button
-                  onClick={handleDownload}
-                  className="btn btn-secondary btn-sm"
-                >
-                  Download
-                </button>
-              </div>
-              {/* Filter Checkboxes */}
-              <div className="form-control mb-4 flex gap-2 text-xs">
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.summary}
-                    onChange={() => handleFilterChange('summary')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Summary</span>
-                </label>
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.experience}
-                    onChange={() => handleFilterChange('experience')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Experience</span>
-                </label>
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.education}
-                    onChange={() => handleFilterChange('education')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Education</span>
-                </label>
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.honors}
-                    onChange={() => handleFilterChange('honors')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Honors</span>
-                </label>
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.certifications}
-                    onChange={() => handleFilterChange('certifications')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Certifications</span>
-                </label>
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.skills}
-                    onChange={() => handleFilterChange('skills')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Skills</span>
-                </label>
-                <label className="label cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={filters.posts}
-                    onChange={() => handleFilterChange('posts')}
-                    className="checkbox checkbox-primary"
-                  />
-                  <span className="label-text">Posts</span>
-                </label>
-              </div>
-              {/* JSON Output */}
-              <pre
-                className="mockup-code"
-                style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
-              >
-                <code>{JSON.stringify(filteredData || {}, null, 2)}</code>
-              </pre>
-            </>
-          ) : (
-            <p className="text-center text-gray-500">
-              Enter a valid LinkedIn URL to view profile data.
-            </p>
-          )}
-        </div>
-
-        {/* Right: Chat Box */}
-        <div className="lg:w-1/2 card bg-base-100 shadow-xl p-6">
-          <h2 className="card-title mb-4">Ask About the Profile</h2>
-          <div className="flex flex-col h-[400px] overflow-y-auto mb-4 p-4 bg-base-200 rounded-box">
-            {chatMessages.length === 0 ? (
-              <p className="text-center text-gray-500">
-                Ask a question about the profile data.
-              </p>
-            ) : (
-              chatMessages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`chat ${
-                    msg.role === 'user' ? 'chat-end' : 'chat-start'
-                  }`}
-                >
-                  <div className="chat-header">
-                    {msg.role === 'user' ? 'You' : 'Assistant'}
-                  </div>
-                  <div
-                    className={`chat-bubble ${
-                      msg.role === 'user' ? 'chat-bubble-primary' : ''
-                    }`}
-                  >
-                    {msg.content}
-                  </div>
+        <div className="flex flex-col lg:flex-row gap-6 flex-grow">
+          {/* Left: JSON Output with Filters */}
+          <div className="lg:w-1/2 card bg-base-100 shadow-xl p-6 h-[600px] overflow-y-auto">
+            <h2 className="card-title mb-4">
+              Profile Ingest of {profileData?.name || 'User'}
+            </h2>
+            {isLoading ? (
+              <div className="mockup-code p-4">
+                <p>Please Wait while we are fetching the profile details</p>
+                <div className="flex w-full flex-col gap-2">
+                  <div className="skeleton h-4 w-3/4"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-4/6"></div>
+                  <div className="skeleton h-4 w-3/6"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-full"></div>
+                  <div className="skeleton h-4 w-1/4"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-4/6"></div>
+                  <div className="skeleton h-4 w-3/6"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-full"></div>
+                  <div className="skeleton h-4 w-1/4"></div>
+                  <div className="skeleton h-4 w-5/6"></div>
+                  <div className="skeleton h-4 w-3/4"></div>
                 </div>
-              ))
+              </div>
+            ) : profileData ? (
+              <>
+                {/* Action Buttons */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={handleCopyAll}
+                    className="btn btn-primary btn-sm"
+                  >
+                    Copy All
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    className="btn btn-secondary btn-sm"
+                  >
+                    Download
+                  </button>
+                </div>
+                {/* Filter Checkboxes */}
+                <div className="form-control mb-4 flex gap-2 text-xs">
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.summary}
+                      onChange={() => handleFilterChange('summary')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Summary</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.experience}
+                      onChange={() => handleFilterChange('experience')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Experience</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.education}
+                      onChange={() => handleFilterChange('education')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Education</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.honors}
+                      onChange={() => handleFilterChange('honors')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Honors</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.certifications}
+                      onChange={() => handleFilterChange('certifications')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Certifications</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.skills}
+                      onChange={() => handleFilterChange('skills')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Skills</span>
+                  </label>
+                  <label className="label cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filters.posts}
+                      onChange={() => handleFilterChange('posts')}
+                      className="checkbox checkbox-primary"
+                    />
+                    <span className="label-text">Posts</span>
+                  </label>
+                </div>
+                {/* JSON Output */}
+                <pre
+                  className="mockup-code"
+                  style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
+                >
+                  <code>{JSON.stringify(filteredData || {}, null, 2)}</code>
+                </pre>
+              </>
+            ) : (
+              <p className="text-center text-gray-500">
+                Enter a valid LinkedIn URL to view profile data.
+              </p>
             )}
           </div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
-              className="input input-bordered flex-grow"
-              placeholder="Ask about the profile..."
-            />
-            <button
-              onClick={handleChatSubmit}
-              className="btn btn-primary"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="loading loading-spinner"></span>
+
+          {/* Right: Chat Box */}
+          <div className="lg:w-1/2 card bg-base-100 shadow-xl p-6 h-[600px] overflow-y-auto">
+            <h2 className="card-title mb-4">Ask About the Profile</h2>
+            <div className="flex flex-col h-[400px] overflow-y-auto mb-4 p-4 bg-base-200 rounded-box">
+              {chatMessages.length === 0 ? (
+                <p className="text-center text-gray-500">
+                  Ask a question about the profile data.
+                </p>
               ) : (
-                'Send'
+                chatMessages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`chat ${
+                      msg.role === 'user' ? 'chat-end' : 'chat-start'
+                    }`}
+                  >
+                    <div className="chat-header">
+                      {msg.role === 'user' ? 'You' : 'Assistant'}
+                    </div>
+                    <div
+                      className={`chat-bubble ${
+                        msg.role === 'user' ? 'chat-bubble-primary' : ''
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
+                  </div>
+                ))
               )}
-            </button>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
+                className="input input-bordered flex-grow"
+                placeholder="Ask about the profile..."
+              />
+              <button
+                onClick={handleChatSubmit}
+                className="btn btn-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  'Send'
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

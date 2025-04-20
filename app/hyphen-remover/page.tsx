@@ -132,7 +132,7 @@ export default function HyphenRemoverPage() {
 
       {/* Toast */}
       {toast && (
-        <div className="toast toast-top toast-end">
+        <div className="toast toast-top toast-center">
           <div role="alert" className={`alert alert-${toast.type} alert-soft`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
