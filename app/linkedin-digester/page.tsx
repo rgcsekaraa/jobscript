@@ -494,7 +494,10 @@ export default function LinkedInDigester() {
                 </label>
               </div>
               {/* JSON Output */}
-              <pre className="mockup-code">
+              <pre
+                className="mockup-code"
+                style={{ whiteSpace: 'pre-wrap', overflowWrap: 'break-word' }}
+              >
                 <code>{JSON.stringify(filteredData || {}, null, 2)}</code>
               </pre>
             </>
