@@ -265,7 +265,7 @@ export async function POST(request: NextRequest) {
             content: `Base LaTeX Resume:\n${resumeText}\n\nExtracted Job Details:\n${jobDetails}\n\nGenerate tailored LaTeX resume code:`,
           },
         ],
-        max_tokens: 5000,
+        max_tokens: 2000,
       });
 
       const content = completion.choices[0]?.message.content || '';
