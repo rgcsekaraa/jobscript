@@ -329,7 +329,7 @@ export default function MailPage() {
         {/* Left Side - Job Description */}
         <div>
           <div className="flex justify-between mb-2">
-            <h2 className="text-xl font-semibold">Job Description</h2>
+            <h2 className="text-xl font-semibold">Description</h2>
             <div className="flex gap-2">
               <button
                 className="btn btn-outline btn-sm"
