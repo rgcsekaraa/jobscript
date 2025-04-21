@@ -110,10 +110,15 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Settings</h1>
-      <p className="mb-6">
-        Please enter your OpenAI API key to access the site.
+      <p className="font-light text-gray-500 mb-6">
+        You can access <span className="font-bold">'Hyphen Remover'</span>{' '}
+        without an API key.
+        <br />
+        <span className="italic text-sm">
+          To use other features, please set your OpenAI API key below.
+        </span>
+        <br />
       </p>
-
       {/* DaisyUI Toast */}
       {toast && (
         <div className="toast toast-top toast-center">
