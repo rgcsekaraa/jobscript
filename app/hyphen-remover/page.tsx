@@ -126,7 +126,7 @@ export default function HyphenRemoverPage() {
           </div>
         </div>
         <p className="mt-2">
-          Ever annoyed by em-dashes (—) in llm generated text? This tool helps
+          Ever annoyed by em-dashes (—) in Ai generated text? This tool helps
           you remove them.
         </p>
       </header>
