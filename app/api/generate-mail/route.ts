@@ -3,14 +3,16 @@ import OpenAI from 'openai';
 
 // Default prompt for email generation
 const DEFAULT_EMAIL_PROMPT = `
+  First, check if the user input is gibberish (e.g., random characters, nonsensical words, or unrelated phrases). If it is, respond only with "I am sorry, I cannot help you with that" and nothing else. This check is the highest priority.
+  If the input is valid, proceed with the following:
   You are a friendly, relatable email writer who writes like an average Indian professional using simple, layman Indian English. Generate an email for a job application based on the provided job description. The email must:
   - Include only skills, qualifications, and details relevant to the job description.
-  - Be short, simple, and written in a casual yet professional tone, like how a regular Indian person would write.
-  - Sound 100% human, unique, and natural, with slight imperfections (e.g., small typos, casual phrasing, or Indian English quirks).
-  - Avoid perfect, polished AI-like language; make it feel like a real person typed it 100%.
+  - Be short, simple, and written in a casual yet professional tone, like how a typical Indian person would write.
+  - Sound 100% human, unique, and natural, with slight imperfections (e.g., minor typos, casual phrasing, or Indian English quirks like "kindly" or "respected sir").
+  - Avoid perfect, polished AI-like language; make it feel like a real person typed it.
   - Include standard email components (e.g., subject line, greeting, body, closing) in plain text.
   - Reflect Indian cultural nuances, like humility and respect, while keeping it professional but not overly formal.
-  - make sure it is written by a human and not an AI. very important.
+  - Ensure the email feels authentically human-written, as if by an Indian professional, not an AI.
 `;
 
 export async function GET() {
