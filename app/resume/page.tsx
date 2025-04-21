@@ -139,13 +139,9 @@ export default function ResumePage() {
   const handleReset = () => {
     setJobDescription('');
     setGeneratedContent({ content: '' });
-    setFile(null);
     setIsLoading(false);
     setIsLatexConverted(false);
-    setPdfUrl('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    // setPdfUrl('');
     setToast({
       message: 'Form reset successfully!',
       type: 'success',
@@ -657,7 +653,7 @@ export default function ResumePage() {
         >
           {isLoading ? 'Generating...' : 'Generate Resume'}
         </button>
-        <button
+        {/* <button
           className="btn btn-primary"
           onClick={handleConvertToLatex}
           disabled={isLoading || !generatedContent.content}
@@ -670,7 +666,7 @@ export default function ResumePage() {
           disabled={isLoading || !isLatexConverted}
         >
           Download PDF
-        </button>
+        </button> */}
       </div>
     </div>
   );
