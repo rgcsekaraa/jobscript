@@ -126,7 +126,8 @@ export default function HyphenRemoverPage() {
           </div>
         </div>
         <p className="mt-2">
-          Enter text to remove em-dashes (—) and replace them with spaces.
+          Ever annoyed by em-dashes (—) in llm generated text? This tool helps
+          you remove them.
         </p>
       </header>
 
