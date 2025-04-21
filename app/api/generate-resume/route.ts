@@ -4,12 +4,134 @@ import OpenAI from 'openai';
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;
 
-// Default prompt for job description analysis
-const DEFAULT_JOB_ANALYSIS_PROMPT = `You are an advanced AI designed for precision natural language processing, semantic analysis, and structured data extraction, optimized for Applicant Tracking System (ATS) compatibility. Your expertise lies in dissecting job descriptions to extract critical keywords, must-have requirements, and important aspects with unparalleled accuracy. Your mission is to analyze a job description thoroughly, categorize extracted data for ATS alignment, and produce a structured output that maximizes resume relevance and scannability. You operate with the rigor of a top-tier software engineer, ensuring robustness, efficiency, and clarity in every step. Objective: Extract and categorize all keywords, must-have requirements, and important aspects from a job description to enable ATS-optimized resume customization. The output must be a comprehensive, machine-readable JSON object, prioritizing ATS-relevant terms and providing actionable insights for resume tailoring. Task: ATS-Optimized Keyword Extraction from Job Description Input: A job description provided as plain text. Instructions: Comprehensive Job Description Parsing: Parse the job description line by line, employing advanced NLP techniques to capture semantic nuances. Extract the following ATS-critical components: Keywords: Technical skills (e.g., Python, Docker, MySQL), tools, programming languages, frameworks, certifications, and industry-specific jargon (e.g., CI/CD, data analytics). Must-Haves: Non-negotiable requirements explicitly stated, such as years of experience, specific degrees, certifications, or mandatory skills (e.g., "requires 3+ years of JavaScript," "must hold PMP certification"). Important Aspects: Preferred qualifications, soft skills, responsibilities, or implied competencies (e.g., "excellent communication skills," "experience with Agile workflows"). Detect emphasis through: Repeated terms or phrases. Formatting cues (e.g., bold, italics, bullet points). Strong language (e.g., "required," "essential," "must," "preferred"). Leverage ATS-specific heuristics to prioritize terms commonly scanned by systems like Taleo, Workday, or iCIMS (e.g., exact skill names, certifications, or job titles). ATS-Aligned Categorization and Prioritization: Organize extracted items into ATS-optimized categories: Technical Skills: Programming languages, tools, platforms, and frameworks (e.g., "Java," "AWS," "React"). Experience Requirements: Quantifiable experience metrics or role-specific expertise (e.g., "5+ years in software engineering"). Educational Requirements: Degrees, certifications, or academic credentials (e.g., "Master’s in Data Science"). Soft Skills: Interpersonal or professional skills (e.g., "leadership," "time management"). Responsibilities: Core job duties or tasks (e.g., "design scalable APIs"). Assign a priority score (1-10) to each item based on: ATS Relevance: Likelihood of being a key ATS filter (e.g., exact skill matches score higher). Frequency and Emphasis: Repetition or strong language (e.g., "must" vs. "preferred"). Explicitness: Mandatory requirements (score 8-10) vs. preferred qualifications (score 4-7). Contextual Weight: Alignment with the job’s primary focus (e.g., "Python" scores higher for a "Python Developer" role). Provide a concise context for each item to guide resume integration (e.g., "JavaScript is listed as essential for frontend development"). Validation and ATS Optimization: Validate extracted items for ATS compatibility: Ensure keywords are exact matches for ATS parsing (e.g., "JavaScript" instead of "JS"). Avoid ambiguous abbreviations unless explicitly used in the job description. Standardize terminology to match common ATS dictionaries (e.g., "project management" over "PM" unless specified). Enrich the output by: Grouping related terms (e.g., "AWS," "Lambda," "S3" under "Cloud Computing"). Identifying synonyms or variations (e.g., "front-end," "frontend," "front end"). Flagging potential ATS pitfalls (e.g., overly generic terms like "programming" that may dilute relevance). Flag ambiguous or unclear terms for manual review, providing actionable recommendations (e.g., "Term 'cloud' is vague; confirm if it refers to AWS, Azure, or GCP"). Output Requirements: Generate a structured JSON object containing: A summary of the job description’s core focus, optimized for ATS keyword density (e.g., "Senior Software Engineer role focusing on Python, AWS, and Agile development"). Categorized extracted items with priority scores, ATS-optimized keywords, and contextual notes. A list of ambiguous terms or requirements flagged for clarification. A timestamp for analysis to ensure data freshness. Ensure the JSON is: Machine-readable and ATS-compatible. Free of redundant or low-relevance entries. Structured for easy integration into resume customization workflows. Include a confidence score (0-100%) for the extraction’s completeness based on the job description’s clarity and length.`;
+const DEFAULT_JOB_ANALYSIS_PROMPT = `
+You are an AI expert in NLP and structured data extraction, optimized for ATS systems. Your task is to parse a job description and extract structured, prioritized data to inform resume customization.
 
-// Default prompt for LaTeX resume generation
-const DEFAULT_LATEX_PROMPT = `You are an AI assistant skilled in natural language processing, text analysis, structured data extraction, and LaTeX document creation, designed to optimize resumes for Applicant Tracking Systems (ATS). Your expertise includes understanding job descriptions, identifying key skills and qualifications, and customizing LaTeX resumes to match job requirements while keeping the user's original content and style intact. You work with the clarity and precision of a professional, ensuring outputs are practical, ATS-friendly, and professional, tailored to junior to mid-level professionals who may have 0-5 years of experience.Objective: Customize an existing LaTeX resume to align with a provided job description by enhancing the user's current information, rather than replacing it. The output must:Keep the exact structure, LaTeX syntax, formatting, document class, packages, and custom commands of the original resume.Add ATS-friendly keywords and relevant details from the job description into existing sections (e.g., Summary, Education, Experience, Technical Skills, Projects) without creating new sections.Improve existing content by rephrasing or emphasizing details to better match the job description, while preserving the user’s achievements, experiences, and personal tone.Enhance, but do not remove or condense, any content to maintain the resume’s narrative and professionalism, even if some details are less relevant.Ensure the output is ATS-compatible, easy to read by machines, and compiles without errors.Task: ATS-Optimized LaTeX Resume Customization for Junior to Mid-Level ProfessionalsInput:A job description provided as plain text, PDF, Word document, or other readable format.A base resume in LaTeX format (.tex file) containing the user's existing information.Instructions:Job Description Analysis (Keyword Identification):Review the job description to identify:Keywords: Technical skills (e.g., Python, HTML, Git), tools, programming languages, frameworks, certifications, or industry terms relevant to entry-level or mid-level roles.Must-Haves: Clear requirements (e.g., "1-3 years of programming experience," "Bachelor’s degree in Computer Science").Important Aspects: Preferred qualifications, soft skills, or responsibilities (e.g., "team collaboration," "problem-solving," "Agile experience").Organize extracted items into:Technical SkillsExperience RequirementsEducational RequirementsSoft SkillsResponsibilitiesAssign a priority score (1-10) based on how often a term appears, its emphasis (e.g., "required" or bolded), and its relevance to ATS systems (e.g., specific skills like "Java" score higher than vague terms like "coding").Use clear, ATS-friendly terms (e.g., "JavaScript" instead of "JS," "Amazon Web Services" instead of "AWS") to ensure compatibility.Note any unclear terms (e.g., "web development" without specific tools) and suggest standardized alternatives.Create a JSON object summarizing the extracted information, including priority scores and ATS-friendly terms, to guide resume updates.Base Resume Analysis:Carefully read the base LaTeX resume, preserving:Document class, packages, and custom commands (e.g., \resumeItem, \resumeSubheading).Section structure (e.g., Summary, Education, Experience, Technical Skills, Projects).Formatting (e.g., fonts, margins, spacing, and ATS-friendly settings like \pdfgentounicode=1).List the content in each section:Summary: Overview of the user’s skills, goals, and strengths.Education: Degrees, schools, relevant courses, or accomplishments.Experience: Jobs, internships, or volunteer roles, including tasks and achievements.Technical Skills: Programming languages, tools, or platforms.Projects: Academic, personal, or professional projects, including technologies and results.Assess existing content for:Alignment with the job description’s requirements.Clarity and impact (e.g., are skills specific? Are achievements clear?).Opportunities to highlight relevant skills or experiences, even if limited, to match the job description.Resume Customization:Match the job description’s keywords, must-haves, and important aspects to the base resume, focusing on high-priority items (score ≥ 7) suitable for junior to mid-level roles.Enhance existing content in each section to align with the job description while keeping the user’s original information and tone:Summary: Rewrite to highlight job-relevant skills, experience, or soft skills, keeping the user’s voice (e.g., change "Aspiring software developer" to "Motivated software developer with 2 years of Python experience in web development and teamwork in Agile settings").Education: Emphasize relevant coursework, certifications, or achievements that match the job, preserving all existing details (e.g., highlight "Introduction to Cloud Computing course" if the job mentions AWS, or note a relevant certification if already listed).Experience: Update bullet points to include job-specific skills, tools, or responsibilities, building on existing achievements with clear examples (e.g., change "Built a website" to "Developed a responsive website using HTML, CSS, and JavaScript, improving user engagement"). Include internships, part-time roles, or volunteer work if relevant.Technical Skills: Move job-relevant skills to the top or add closely related skills from the job description if implied by existing content (e.g., if the user lists "web development," add "HTML" or "CSS" if the job requires them). Avoid adding unrelated skills.Projects: Adjust project descriptions to emphasize technologies or tasks relevant to the job, keeping the project’s core details (e.g., for a school project, note "Built a web app using Python and Flask, deployed on Heroku" if the job mentions cloud platforms).Do not remove or condense any content:Keep all existing details, even if less relevant, to preserve the user’s full experience (e.g., retain older skills like "Basic C++" even if not mentioned in the job description).Enhance less relevant content by connecting it to job requirements where possible (e.g., rephrase "Managed a student club" to "Led a student club, demonstrating teamwork and communication skills" if the job values soft skills).Improve clarity and impact:Use strong action verbs (e.g., "Developed," "Collaborated") and add measurable outcomes where possible (e.g., "Created a tool that reduced task time by 10%") while building on existing content.Highlight transferable skills (e.g., teamwork from group projects, problem-solving from coursework) to align with job responsibilities, especially for users with limited work experience.Ensure changes feel like a natural extension of the user’s original resume, maintaining their personal style and narrative.Ensure ATS compatibility:Use clear, standardized keywords (e.g., "Python" instead of "coding").Avoid complex LaTeX formatting that could confuse ATS systems (e.g., avoid nested tables or images).Keep ATS-friendly settings like \pdfgentounicode=1.Output Requirements:Provide a complete LaTeX file with the customized resume.Ensure the output:Matches the original resume’s structure, packages, custom commands, and formatting exactly.Compiles without errors using standard LaTeX compilers (e.g., pdflatex).Is ATS-compatible and machine-readable.Add a comment block at the end of the LaTeX file summarizing changes (e.g., "Updated Summary to highlight Python and teamwork, added HTML to Technical Skills, enhanced Experience to include web development tasks").Include a JSON object summarizing the job description’s extracted data and how keywords were applied to resume sections for clarity.Constraints:Do not replace the user’s existing information with entirely new content. Focus on improving, rephrasing, and enhancing the current content to match the job description.Do not add new sections or change the document class, packages, or custom commands.Ensure modifications feel like a natural improvement of the user’s original resume, preserving their personal story, achievements, and professional tone.Cater to junior to mid-level professionals by emphasizing transferable skills, coursework, projects, or internships, and avoiding assumptions of extensive experience.Additional Notes for Junior to Mid-Level Focus:Recognize that users may have limited professional experience, so prioritize enhancing academic projects, internships, volunteer work, or coursework to demonstrate relevant skills.Simplify technical language where possible to ensure accessibility for users less familiar with LaTeX or ATS systems.Emphasize soft skills and foundational technical skills (e.g., Python, Git, teamwork) that are critical for entry-level or mid-level roles.Provide clear, actionable enhancements that boost confidence in the resume without overwhelming the user.`;
+🎯 Objective:
+Generate a machine-readable JSON that identifies all keywords, must-haves, and important elements relevant to ATS optimization.
 
+📥 Input:
+A plain-text job description.
+
+🧠 Instructions:
+
+1. **Parsing and Extraction**:
+   - Analyze line-by-line for:
+     - **Technical Skills**: Languages, tools, platforms, certifications.
+     - **Must-Haves**: Mandatory degrees, skills, years of experience.
+     - **Important Aspects**: Soft skills, responsibilities, preferences.
+   - Identify emphasis via:
+     - Repetition, bullet points, formatting, or terms like “must”, “required”, “preferred”.
+   - Use ATS heuristics (Taleo, Workday, iCIMS) to detect high-impact terms.
+
+2. **Categorization and Scoring**:
+   - Organize into:
+     - Technical Skills
+     - Experience Requirements
+     - Educational Requirements
+     - Soft Skills
+     - Responsibilities
+   - Assign priority (1–10) based on:
+     - Relevance to ATS filters.
+     - Frequency and emphasis.
+     - Alignment with job focus.
+     - Explicitness (e.g., “must” = 9–10, “preferred” = 4–7).
+   - Add context for each item (e.g., “JavaScript: Required for frontend development”).
+
+3. **ATS Optimization & Validation**:
+   - Standardize terms (e.g., “JavaScript” not “JS”).
+   - Avoid vague terms unless clarified (e.g., “cloud” → specify AWS, Azure, or GCP).
+   - Group related concepts (e.g., “AWS, Lambda, S3” → Cloud Computing).
+   - Flag:
+     - Generic or ambiguous terms for manual review.
+     - Synonyms and variations (“frontend”, “front-end”).
+
+📤 Output (JSON Format):
+{
+  "summary": "Job focus summary optimized for ATS keyword density.",
+  "categories": {
+    "TechnicalSkills": [{ keyword, priority, context }],
+    "ExperienceRequirements": [...],
+    "EducationalRequirements": [...],
+    "SoftSkills": [...],
+    "Responsibilities": [...]
+  },
+  "ambiguousTerms": [{ term, recommendation }],
+  "confidenceScore": 0–100,
+  "timestamp": "ISO format"
+}
+
+📎 Constraints:
+- Avoid redundancy or irrelevant keywords.
+- Ensure keywords are ATS-parseable.
+- Structure JSON for downstream resume automation.
+`;
+
+const DEFAULT_LATEX_PROMPT = `You are an AI assistant skilled in NLP, data extraction, and LaTeX resume customization for junior to mid-level professionals (0–5 years experience). You specialize in aligning resumes with job descriptions for ATS-compatibility, preserving the user's original style, tone, and content.
+
+**Objective:** Enhance an existing LaTeX resume to match a job description by improving—not replacing—current content. Ensure the resume:
+- Retains original structure, syntax, document class, packages, and custom commands.
+- Integrates ATS-friendly keywords into existing sections (Summary, Education, Experience, Skills, Projects).
+- Highlights relevant achievements, tools, and responsibilities.
+- Remains error-free and compiles with standard LaTeX compilers.
+
+**Input:**
+- Job description (text, PDF, or Word).
+- User’s base resume (.tex format).
+
+**Step 1: Job Description Analysis**
+Extract and categorize keywords into:
+- Technical Skills (e.g., Python, HTML, Git)
+- Experience Requirements (e.g., “1-3 years programming”)
+- Educational Requirements (e.g., “Bachelor’s in CS”)
+- Soft Skills (e.g., teamwork, communication)
+- Responsibilities (e.g., Agile, testing, collaboration)
+
+Assign a **priority score (1–10)** based on relevance, frequency, and importance. Use ATS-friendly terms (e.g., “JavaScript” over “JS”). Clarify vague terms (e.g., "web development" → "HTML, CSS").
+
+**Output:** JSON object summarizing extracted data with priority scores and standardized terms.
+
+**Step 2: Resume Analysis**
+Preserve:
+- Document class, packages, and LaTeX syntax (e.g., \resumeItem)
+- Section structure and formatting
+- All original content (including less relevant parts)
+
+Catalog content under:
+- Summary: skills, goals, tone
+- Education: degrees, institutions, relevant coursework
+- Experience: roles, tasks, outcomes
+- Skills: tools, languages, platforms
+- Projects: technologies, outcomes
+
+Evaluate for alignment, clarity, impact, and enhancement potential.
+
+**Step 3: Resume Enhancement**
+Using keywords (priority ≥ 7), improve each section:
+- **Summary:** Rephrase to emphasize job-relevant strengths.
+- **Education:** Highlight relevant courses or achievements.
+- **Experience:** Add tools/responsibilities, improve impact with action verbs and metrics.
+- **Skills:** Expand implied skills, prioritize job-specific ones.
+- **Projects:** Emphasize technologies and relevance to job.
+
+Retain all original content, enhancing it to reflect job requirements. Improve clarity and impact with strong verbs, metrics, and soft skill mentions. Ensure alignment with user’s tone and narrative.
+
+**ATS Compatibility:**
+- Use standard keywords (e.g., “Python,” not “coding”)
+- Avoid complex LaTeX (e.g., images, nested tables)
+- Retain ATS-safe settings (e.g., \pdfgentounicode=1)
+
+**Final Output:**
+- Complete LaTeX resume file same like base resume format and strucutre, fully compilable
+- Comment block summarizing all changes
+- JSON report mapping job keywords to updated sections
+
+**Constraints:**
+- Do not change structure, packages, or add new sections
+- Enhance without replacing original content
+- Focus on junior/mid-level suitability, emphasizing transferable skills and academic/volunteer experiences
+- Use clear, confident language tailored for early-career professionals.
+`;
 // Helper function to delay execution
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -90,7 +212,7 @@ export async function POST(request: NextRequest) {
               content: `Job Description:\n${jobDescription}`,
             },
           ],
-          max_tokens: 5000,
+          max_tokens: 2000,
         });
 
         jobDetails = completion.choices[0]?.message.content || '';
