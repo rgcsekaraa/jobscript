@@ -135,11 +135,7 @@ export default function CVPage() {
   const handleReset = () => {
     setJobDescription('');
     setGeneratedContent({ content: '' });
-    setFile(null);
     setIsLoading(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
     setToast({
       message: 'Form reset successfully!',
       type: 'success',

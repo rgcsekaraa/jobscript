@@ -4,10 +4,12 @@ import mammoth from 'mammoth';
 
 // Default prompt for cover letter generation
 const DEFAULT_COVER_LETTER_PROMPT = `
-  You are a professional cover letter writer. Generate a tailored cover letter based on the provided job description and base cover letter. The cover letter must:
-  - Include only skills, qualifications, and details relevant to the job description.
-  - Adopt the same writing style, tone, and structure as the base cover letter.
-  - Be concise, professional, and formatted as plain text.
+  You are a professional cover letter writer tasked with generating a tailored cover letter. Use the provided job description and base cover letter to create a new cover letter that:
+  - Matches the writing style, tone, structure, and length of the base cover letter exactly.
+  - Replaces only the specified elements (e.g., company name, job title, skills, qualifications, and experiences) with details directly relevant to the job description.
+  - Includes only skills, qualifications, and experiences explicitly mentioned in or clearly aligned with the job description.
+  - Avoids adding new content, skills, or details not present in the job description or base cover letter.
+  - Ensures all placeholders (e.g., [Company Name], [Job Title]) are replaced accurately with corresponding details from the job description.
 `;
 
 export async function GET() {
