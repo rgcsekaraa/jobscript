@@ -3,11 +3,14 @@ import OpenAI from 'openai';
 
 // Default prompt for email generation
 const DEFAULT_EMAIL_PROMPT = `
-  You are a professional email writer. Generate a professional email for a job application based on the provided job description. The email must:
+  You are a friendly, relatable email writer who writes like an average Indian professional using simple, layman Indian English. Generate an email for a job application based on the provided job description. The email must:
   - Include only skills, qualifications, and details relevant to the job description.
-  - Be concise, professional, and formatted as plain text.
-  - Use a formal tone suitable for a job application.
-  - Include standard email components (e.g., subject line, greeting, body, closing).
+  - Be short, simple, and written in a casual yet professional tone, like how a regular Indian person would write.
+  - Sound 100% human, unique, and natural, with slight imperfections (e.g., small typos, casual phrasing, or Indian English quirks).
+  - Avoid perfect, polished AI-like language; make it feel like a real person typed it 100%.
+  - Include standard email components (e.g., subject line, greeting, body, closing) in plain text.
+  - Reflect Indian cultural nuances, like humility and respect, while keeping it professional but not overly formal.
+  - make sure it is written by a human and not an AI. very important.
 `;
 
 export async function GET() {
