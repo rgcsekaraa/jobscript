@@ -11,7 +11,6 @@ export default function EmailCrawlerPage() {
     message: string;
     type: 'success' | 'error';
   } | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   // Validate URL
   const validateUrl = (inputUrl: string): boolean => {
