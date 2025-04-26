@@ -13,12 +13,6 @@ export default function EmailCrawlerPage() {
   } | null>(null);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  // Toggle theme
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark', !isDarkMode);
-  };
-
   // Validate URL
   const validateUrl = (inputUrl: string): boolean => {
     try {
