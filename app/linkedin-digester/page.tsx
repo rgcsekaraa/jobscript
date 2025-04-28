@@ -549,7 +549,7 @@ export default function LinkedInDigester() {
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleChatSubmit()}
+              onKeyDown={(e) => e.key === 'Enter' && handleChatSubmit()}
               className="input input-bordered flex-grow"
               placeholder="Ask about the profile..."
             />
