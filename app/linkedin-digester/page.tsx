@@ -45,12 +45,6 @@ export default function LinkedInDigester() {
     posts: false,
   });
 
-  // Toggle theme
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark', !isDarkMode);
-  };
-
   // Validate LinkedIn URL and extract username
   const validateLinkedInUrl = (inputUrl: string): string | null => {
     const regex = /^https:\/\/(www\.)?linkedin\.com\/in\/([a-zA-Z0-9\-]+)\/?$/;
