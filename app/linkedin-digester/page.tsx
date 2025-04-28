@@ -30,7 +30,6 @@ export default function LinkedInDigester() {
   const [error, setError] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState<string>('');
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [toast, setToast] = useState<{
     message: string;
     type: 'success' | 'error';
