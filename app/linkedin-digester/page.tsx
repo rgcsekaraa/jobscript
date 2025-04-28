@@ -224,7 +224,7 @@ export default function LinkedInDigester() {
       return;
     }
 
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       // Use filteredData if any filter is unticked; otherwise, use profileData
       const dataToSend = areAllFiltersSelected()
